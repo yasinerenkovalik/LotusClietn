@@ -1,108 +1,60 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import { Button, Container, Row, Col } from "reactstrap";
-
-
+import { Link } from "react-router-dom"; // react-router-dom ekledik
+import { fetchGetAllConcept } from "../../api";
+import "./consepts.css";
 
 function SectionExamples() {
+  const [data, setData] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchData() {
+      try {
+        const response = await fetchGetAllConcept();
+        console.log(response);
+        setData(response.data);
+        setLoading(false);
+      } catch (error) {
+        console.error("Veri getirme hatası:", error);
+        setLoading(false);
+      }
+    }
+
+    fetchData();
+  }, []);
+
   return (
-    <>
-      <div className="section" style={{  }}> {/* Arka plan rengini koyu gri (#333) olarak ayarlıyoruz */}
-        <Container>
-          <Row className="example-page">
-            <Col className="text-center" md="4">
-              <a href="examples/landing.html" target="_blank">
+    <div className="section">
+      <Container>
+        <Row className="example-page">
+          {data.map((item, index) => (
+            <Col key={index} className="text-center" md="4">
+              <>
                 <img
-                  alt="..."
+                  alt={item.name}
                   className="img-rounded img-responsive"
-                  src={require("assets/img/examples/landing-page.png")}
-                  style={{ width: "100%" }}
+                  src={`data:image/png;base64,${item.image}`}
+                  style={{ width: "300px", height: "200px" }}
                 />
-              </a>
-              <Button
-                className="btn-outline-neutral btn-round"
-                color="default"
-                href="/landing-page"
-                target="_blank"
-              >
-                Landing Page
-              </Button>
+                {/* Buton yerine Link kullanıyoruz */}
+                <Link
+                  to={`/consept/${item.id}`} // item.id'yi URL parametresi olarak iletiyoruz
+                >
+                  <Button
+                    className="btn-outline-neutral btn-round"
+                    color="default"
+                    target="_blank"
+                  >
+                    {item.name}
+                  </Button>
+                </Link>
+              </>
             </Col>
-            <Col className="text-center" md="4">
-              <a href="examples/profile.html" target="_blank">
-                <img
-                  alt="..."
-                  className="img-rounded img-responsive"
-                  src={require("assets/img/examples/profile-page.png")}
-                  style={{ width: "100%" }}
-                />
-              </a>
-              <Button
-                className="btn-outline-neutral btn-round"
-                color="default"
-                href="/profile-page"
-                target="_blank"
-              >
-                Profile Page
-              </Button>
-            </Col>
-            <Col className="text-center" md="4">
-              <a href="examples/profile.html" target="_blank">
-                <img
-                  alt="..."
-                  className="img-rounded img-responsive"
-                  src={require("assets/img/examples/profile-page.png")}
-                  style={{ width: "100%" }}
-                />
-              </a>
-              <Button
-                className="btn-outline-neutral btn-round"
-                color="default"
-                href="/profile-page"
-                target="_blank"
-              >
-                Profile Page
-              </Button>
-            </Col>
-            <Col className="text-center" md="4">
-              <a href="examples/profile.html" target="_blank">
-                <img
-                  alt="..."
-                  className="img-rounded img-responsive"
-                  src={require("assets/img/examples/profile-page.png")}
-                  style={{ width: "100%" }}
-                />
-              </a>
-              <Button
-                className="btn-outline-neutral btn-round"
-                color="default"
-                href="/profile-page"
-                target="_blank"
-              >
-                Profile Page
-              </Button>
-            </Col>
-            <Col className="text-center" md="4">
-              <a href="examples/profile.html" target="_blank">
-                <img
-                  alt="..."
-                  className="img-rounded img-responsive"
-                  src={require("assets/img/examples/profile-page.png")}
-                  style={{ width: "100%" }}
-                />
-              </a>
-              <Button
-                className="btn-outline-neutral btn-round"
-                color="default"
-                href="/profile-page"
-                target="_blank"
-              >
-                Profile Page
-              </Button>
-            </Col>
-          </Row>
-        </Container>
-      </div>{" "}
-    </>
+          ))}
+        </Row>
+      </Container>
+    </div>
   );
 }
 

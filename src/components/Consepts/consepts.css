@@ -1,3 +1,11 @@
 .body{
     margin-top: 200px;
 }
+/* styles.css veya benzeri bir CSS dosyasında yer almalıdır */
+/* styles.css veya benzeri bir CSS dosyasında yer almalıdır */
+.btn-outline-neutral {
+    color: black; /* Button metin rengi siyah olsun */
+    border: 2px solid black; /* Button sınır kalınlığını ve rengini siyah yapın */
+
+  }
+

@@ -2,7 +2,7 @@ import React from "react";
 import IndexNavbar from "components/Navbars/ExamplesNavbar.js";
 import DemoFooter from "components/Footers/DemoFooter.js";
 import SectionCarousel from "./SectionCarousel";
-import Table from "./table";
+import Table from "./table"; // "Table" bileşenini doğru şekilde içe aktardığınızdan emin olun
 import "./consepts.css";
 
 function Consept() {
@@ -22,7 +22,7 @@ function Consept() {
             <SectionCarousel />
           </div>
           <div className="flex-grow-1 mb-5">
-            <Table />
+            <Table /> {/* "Table" bileşenini doğru şekilde kullanıyorsunuz gibi görünüyor */}
           </div>
         </div>
       </div>

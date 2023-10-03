@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   Container,
@@ -9,33 +9,16 @@ import {
   CarouselIndicators,
   CarouselCaption,
 } from "reactstrap";
-
-const items = [
-  {
-    src: require("assets/img/soroush-karimi.jpg"),
-    altText: "Somewhere",
-    caption: "Somewhere",
-  },
-  {
-    src: require("assets/img/federico-beccari.jpg"),
-    altText: "Somewhere else",
-    caption: "Somewhere else",
-  },
-  {
-    src: require("assets/img/joshua-stannard.jpg"),
-    altText: "Here it is",
-    caption: "Here it is",
-  },
-  {
-    src: require("assets/img/joshua-stannard.jpg"),
-    altText: "yasyas",
-    caption: "yas yas",
-  },
-];
+import { useParams } from "react-router-dom"; // useParams'ı içe aktarın
+import { fetchGetByIdConcept } from "../../api";
 
 function SectionCarousel() {
-  const [activeIndex, setActiveIndex] = React.useState(0);
-  const [animating, setAnimating] = React.useState(false);
+  const [activeIndex, setActiveIndex] = useState(0);
+  const [animating, setAnimating] = useState(false);
+  const [items, setItems] = useState([]);
+  const { id } = useParams();
+
+
 
   const onExiting = () => {
     setAnimating(true);
@@ -62,15 +45,41 @@ function SectionCarousel() {
     setActiveIndex(newIndex);
   };
 
+  // Veriyi çekmek için bu işlevi kullanabilirsiniz
+  const fetchData = async () => {
+    try {
+      // Yukarıda useParams ile aldığımız "id" parametresini kullanın
+      const conceptId = id; // URL'den alınan "id" parametresini kullanır
+      const concept = await fetchGetByIdConcept(conceptId);
+      console.log("API Verisi:", concept);
+
+      // API'den gelen veriyi Carousel için uygun hale getirin
+      const carouselItems = [
+        {
+          src: `data:image/png;base64,${concept.data.image}`,
+        },
+        // İhtiyaca göre daha fazla öğe ekleyebilirsiniz
+      ];
+
+      // Carousel öğelerini state'e atayın
+      setItems(carouselItems);
+    } catch (error) {
+      console.error("Veri getirme hatası:", error);
+    }
+  };
+
+  useEffect(() => {
+    fetchData(); // Bileşen yüklendiğinde veriyi çekmek için çağırabilirsiniz
+  }, [id]); // id değiştiğinde tekrar verileri çekmek için bağımlılığı ekleyin
+
   return (
     <>
       <div className="section pt-0" id="carousel">
         <Container>
           <Row>
             <Col className="mr-auto" md="4">
-              <Card className="page-carousel bg-transparent ">
-                {/* Carousel'ı saran div */}
-                <div style={{ width: '400px',  }}>
+              <Card className="page-carousel bg-transparent">
+                <div style={{ width: '400px' }}>
                   <Carousel
                     activeIndex={activeIndex}
                     next={next}
@@ -81,47 +90,16 @@ function SectionCarousel() {
                       activeIndex={activeIndex}
                       onClickHandler={goToIndex}
                     />
-                    {items.map((item) => {
-                      return (
-                        <CarouselItem
-                          onExiting={onExiting}
-                          onExited={onExited}
-                          key={item.src}
-                        >
-                          <img src={item.src} alt={item.altText} />
-                          <CarouselCaption
-                            captionText={item.caption}
-                            captionHeader=""
-                          />
-                        </CarouselItem>
-                      );
-                    })}
-                    <a
-                      className="left carousel-control carousel-control-prev"
-                      data-slide="prev"
-                      href="#pablo"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        previous();
-                      }}
-                      role="button"
-                    >
-                      <span className="fa fa-angle-left" />
-                      <span className="sr-only">Previous</span>
-                    </a>
-                    <a
-                      className="right carousel-control carousel-control-next"
-                      data-slide="next"
-                      href="#pablo"
-                      onClick={(e) => {
-                        e.preventDefault();
-                        next();
-                      }}
-                      role="button"
-                    >
-                      <span className="fa fa-angle-right" />
-                      <span className="sr-only">Next</span>
-                    </a>
+                    {items.map((item, index) => (
+                      <CarouselItem
+                        onExiting={onExiting}
+                        onExited={onExited}
+                        key={index}
+                      >
+                        <img src={item.src} alt="" />
+                        <CarouselCaption captionText="Merhaba" captionHeader="" />
+                      </CarouselItem>
+                    ))}
                   </Carousel>
                 </div>
               </Card>
